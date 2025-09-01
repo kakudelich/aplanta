@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeFlow | Учет рабочего времени</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="google-signin-client_id" content="101907741523-v1iefkupl4qug9nd1ahdlq38fv2hg68k.apps.googleusercontent.com">
+    <!-- Замените YOUR_CLIENT_ID на ваш реальный ID -->
+</head>
+<body>
+    <div class="container">
+        <!-- Экран приветствия и аутентификации -->
+        <div class="auth-screen" id="authScreen">
+            <div class="logo">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="20" fill="rgb(178, 223, 219)" />
+                    <path d="M15,25 L22,32 L35,18" stroke="white" stroke-width="3" fill="none" />
+                </svg>
+                <h1>TimeFlow</h1>
+            </div>
+            <p class="tagline">Учет рабочего времени и заработка</p>
+            
+            <div class="auth-options">
+                <div class="g-signin2" data-onsuccess="onSignIn" data-theme="light"></div>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>📊 Отслеживание времени</h3>
+                    <p>Фиксируйте начало и конец рабочего дня</p>
+                </div>
+                <div class="feature">
+                    <h3>💸 Расчет заработка</h3>
+                    <p>Автоматический расчет дохода по часам</p>
+                </div>
+                <div class="feature">
+                    <h3>👥 Командная работа</h3>
+                    <p>Несколько пользователей на одном аккаунте</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основной экран приложения (изначально скрыт) -->
+        <div class="app-container hidden" id="appContainer">
+            <!-- Навигация -->
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <svg width="30" height="30" viewBox="0 0 50 50">
+                        <circle cx="25" cy="25" r="20" fill="rgb(178, 223, 219)" />
+                        <path d="M15,25 L22,32 L35,18" stroke="white" stroke-width="3" fill="none" />
+                    </svg>
+                    <span>TimeFlow</span>
+                </div>
+                <div class="nav-user">
+                    <img id="userAvatar" width="30" height="30" style="border-radius: 50%;">
+                    <span id="userName"></span>
+                    <a href="#" onclick="signOut();">Выйти</a>
+                </div>
+            </nav>
+
+            <!-- Основной контент -->
+            <main class="main-content">
+                <!-- Экран таймера -->
+                <section class="timer-section" id="timerSection">
+                    <h2>Текущий рабочий сеанс</h2>
+                    <div class="timer-card">
+                        <div class="timer-display">
+                            <span id="currentTimer">00:00:00</span>
+                        </div>
+                        <div class="timer-controls">
+                            <button id="startTimer" class="btn-primary" onclick="startTimer()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polygon points="10,8 16,12 10,16"></polygon>
+                                </svg>
+                                Начать день
+                            </button>
+                            <button id="stopTimer" class="btn-secondary" onclick="stopTimer()" disabled>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <rect x="9" y="9" width="6" height="6"></rect>
+                                </svg>
+                                Завершить день
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Текущий заработок</h3>
+                            <span id="currentEarnings">0 ₽</span>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Отработанно сегодня</h3>
+                            <span id="todayTime">00:00:00</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Настройки почасовой ставки -->
+                <section class="rate-section">
+                    <h2>Почасовая ставка</h2>
+                    <div class="rate-card">
+                        <input type="number" id="hourlyRate" placeholder="Почасовая ставка (₽)">
+                        <button onclick="updateHourlyRate()">Сохранить</button>
+                    </div>
+                </section>
+
+                <!-- Навигация по разделам -->
+                <section class="app-nav">
+                    <button class="nav-btn" onclick="showSection('timerSection')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Таймер
+                    </button>
+                    <button class="nav-btn" onclick="showSection('historySection')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        История
+                    </button>
+                    <button class="nav-btn" onclick="showSection('teamSection')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Команда
+                    </button>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Загрузка библиотек -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
