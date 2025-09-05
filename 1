@@ -1,0 +1,3023 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клональное микроразмножение растений | Лаборатория А-ПЛАНТА</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --white: rgb(255, 255, 255);
+            --light-gray: rgb(245, 245, 247);
+            --mint: rgb(178, 223, 219);
+            --dark: rgb(51, 51, 51);
+            --yellow: rgb(255, 204, 0);
+            --red: rgb(255, 59, 48);
+            --green: rgb(52, 199, 89);
+            --border-color: rgb(220, 220, 220);
+            --highlight: rgba(178, 223, 219, 0.5);
+            --archive-color: rgba(128, 128, 128, 0.2);
+            --blue: rgb(0, 122, 255);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 2rem;
+        }
+        
+        header {
+            background-color: var(--white);
+            color: var(--dark);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Гарантируем круглую форму */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--mint);
+            flex-shrink: 0; /* Запрещаем сжатие логотипа */
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .header-title {
+            font-weight: 500;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            width: 300px;
+        }
+        
+        .search-container input {
+            border: none;
+            background: transparent;
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        
+        .search-container i {
+            color: #888;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .stats-container {
+            display: flex;
+            flex: 1;
+            overflow-x: auto; /* Горизонтальный скролл для статистики */
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 0 1rem;
+            min-width: 120px; /* Минимальная ширина для статистики */
+            flex-shrink: 0; /* Запрещаем сжатие элементов статистики */
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap; /* Кнопки переносятся на новую строку */
+            justify-content: center;
+            gap: 0.5rem; /* Отступ между кнопками */
+            margin-top: 1rem; /* Отступ сверху для кнопок */
+            width: 100%; /* Занимает всю ширину */
+        }
+        
+        .calendar-btn, .settings-btn, .archive-btn, .data-btn {
+            background-color: var(--mint);
+            color: var(--dark);
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        
+        .calendar-btn:hover, .settings-btn:hover, .archive-btn:hover, .data-btn:hover {
+            background-color: rgba(178, 223, 219, 0.8);
+        }
+        
+        .calendar-btn i, .settings-btn i, .archive-btn i, .data-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .view-toggle {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-btn {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-btn.active {
+            background-color: var(--mint);
+            border-color: var(--mint);
+        }
+        
+        .kanban-board {
+            display: flex;
+            overflow-x: auto;
+            gap: 1.2rem;
+            padding: 1rem 0;
+        }
+        
+        .list-view {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .list-view.active {
+            display: flex;
+        }
+        
+        .list-column {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        
+        .list-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .kanban-column {
+            background-color: var(--white);
+            border-radius: 12px;
+            min-width: 280px;
+            max-width: 280px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .column-header h2 {
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .kanban-cards {
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 65vh;
+            padding-right: 5px;
+        }
+        
+        /* Стили для скроллбара */
+        .kanban-cards::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .kanban-cards::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+        
+        .kanban-cards::-webkit-scrollbar-thumb {
+            background: var(--mint);
+            border-radius: 10px;
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: move;
+            position: relative;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card.list-view-card {
+            min-height: auto;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .card.list-view-card .card-image {
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+        }
+        
+        .card.list-view-card .card-text {
+            flex-grow: 1;
+        }
+        
+        .card.list-view-card .card-content {
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .card.highlighted {
+            background-color: var(--highlight);
+            border: 1px solid var(--mint);
+        }
+        
+        .card.archived {
+            background-color: var(--archive-color);
+            opacity: 0.8;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.6rem;
+        }
+        
+        .card-text {
+            flex-grow: 1;
+            margin-right: 0.5rem;
+        }
+        
+        .card h3 {
+            color: var(--dark);
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        
+        .card p {
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .card .latin-name {
+            font-style: italic;
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin: 0.4rem 0;
+        }
+        
+        .tag {
+            background-color: var(--mint);
+            color: var(--dark);
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tag:hover {
+            background-color: rgba(178, 223, 219, 0.8);
+        }
+        
+        .tag-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 4px;
+            display: inline-block;
+        }
+        
+        .timer-info {
+            margin: 0.6rem 0 0.4rem 0;
+            padding: 0.3rem;
+            border-radius: 6px;
+            background-color: var(--light-gray);
+            font-size: 0.75rem;
+        }
+        
+        .timer {
+            display: flex;
+            align-items: center;
+            margin-top: 0.2rem;
+            padding: 0.2rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .timer i {
+            margin-right: 0.3rem;
+            font-size: 0.65rem;
+        }
+        
+        .timer.normal-term {
+            background-color: rgba(52, 199, 89, 0.1);
+            color: var(--green);
+        }
+        
+        .timer.warning-term {
+            background-color: rgba(255, 204, 0, 0.1);
+            color: var(--yellow);
+        }
+        
+        .timer.danger-term {
+            background-color: rgba(255, 59, 48, 0.1);
+            color: var(--red);
+        }
+        
+        .card-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .add-card-btn {
+            background-color: var(--dark);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        
+        .add-card-btn:hover {
+            background-color: #333333ee;
+        }
+        
+        .add-card-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .archive-btn {
+            background-color: var(--light-gray);
+        }
+        
+        .archive-btn:hover {
+            background-color: #e5e5e5;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .modal-left {
+            flex: 2;
+        }
+        
+        .modal-right {
+            flex: 1;
+            border-left: 1px solid var(--light-gray);
+            padding-left: 2rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1.4rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--white);
+            color: var(--dark);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--mint);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            padding-top: 1rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--dark);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: #333333ee;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .btn-danger {
+            background-color: var(--red);
+            color: var(--white);
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-danger:hover {
+            background-color: rgba(255, 59, 48, 0.8);
+        }
+        
+        .btn-archive {
+            background-color: #888;
+            color: var(--white);
+        }
+        
+        .btn-archive:hover {
+            background-color: #666;
+        }
+        
+        .btn-blue {
+            background-color: var(--blue);
+            color: var(--white);
+        }
+        
+        .btn-blue:hover {
+            background-color: rgba(0, 122, 255, 0.8);
+        }
+        
+        .ai-suggestion {
+            background-color: var(--light-gray);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1.2rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .ai-suggestion h4 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .coefficient {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .drag-over {
+            background-color: rgba(178, 223, 219, 0.2);
+        }
+        
+        .count-input-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2001;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .count-input-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-modal, .settings-modal, .archive-modal, .data-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2002;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .calendar-content, .settings-content, .archive-content, .data-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .calendar-header {
+            text-align: center;
+            font-weight: 500;
+            padding: 0.5rem;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+        }
+        
+        .calendar-day {
+            height: 80px;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            padding: 0.5rem;
+            overflow-y: auto;
+        }
+        
+        .calendar-day.has-events {
+            background-color: rgba(178, 223, 219, 0.2);
+        }
+        
+        .calendar-event {
+            font-size: 0.7rem;
+            padding: 0.2rem;
+            margin-bottom: 0.2rem;
+            border-radius: 2px;
+            background-color: var(--mint);
+        }
+        
+        .current-month {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+        }
+        
+        .month-nav {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+        
+        .history-list {
+            margin-top: 1rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            max-height: none;
+            padding-right: 5px;
+        }
+        
+        .history-item {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 0.8rem;
+            border-radius: 8px;
+            background-color: var(--light-gray);
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .history-date {
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.4rem;
+        }
+        
+        .history-details {
+            font-size: 0.85rem;
+            color: 666;
+        }
+        
+        .history-details p {
+            margin-bottom: 0.2rem;
+        }
+        
+        .settings-form {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+        
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+        }
+        
+        .settings-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .edit-input {
+            padding: 0.5rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            width: 60%;
+        }
+        
+        .color-input {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .compact-form {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .compact-form input[type="text"] {
+            flex: 1;
+            padding: 0.6rem;
+        }
+        
+        .archive-list {
+            margin-top: 1.5rem;
+        }
+        
+        .archive-item {
+            padding: 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .archive-item-info {
+            flex-grow: 1;
+        }
+        
+        .archive-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Стили для раздела Данные */
+        .data-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        .data-tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .data-tab.active {
+            border-bottom: 3px solid var(--mint);
+            font-weight: 500;
+        }
+        
+        .data-tab-content {
+            display: none;
+        }
+        
+        .data-tab-content.active {
+            display: block;
+        }
+        
+        .medium-composition {
+            margin-top: 1.5rem;
+        }
+        
+        .composition-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .composition-item input {
+            flex: 1;
+        }
+        
+        .composition-item select {
+            width: 120px;
+        }
+        
+        .protocol-list {
+            margin-top: 1.5rem;
+        }
+        
+        .protocol-item {
+            padding: 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .protocol-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .protocol-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .protocol-detail {
+            background-color: var(--light-gray);
+            padding: 0.8rem;
+            border-radius: 8px;
+        }
+        
+        /* Стили для выбора гормонов */
+        .hormones-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .hormone-option {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-gray);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .hormone-option input {
+            display: none;
+        }
+        
+        .hormone-option span {
+            margin-left: 0.5rem;
+        }
+        
+        .hormone-option.selected {
+            background-color: var(--mint);
+        }
+        
+        .hormone-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        /* Новые стили для системы расчета среды */
+        .medium-calculation {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+        }
+        
+        .calculation-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--white);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Медиа-запросы для мобильной версии */
+        @media (max-width: 1200px) {
+            .stats-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .stats-container {
+                width: 100%;
+            }
+            
+            .buttons-container {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .stats-container {
+                flex-wrap: wrap;
+            }
+            
+            .stat-item {
+                flex: 0 0 33%;
+                margin-bottom: 1rem;
+            }
+            
+            .modal-content {
+                flex-direction: column;
+            }
+            
+            .modal-right {
+                border-left: none;
+                border-top: 1px solid var(--light-gray);
+                padding-left: 0;
+                padding-top: 2rem;
+            }
+            
+            .kanban-column {
+                min-width: 250px;
+            }
+            
+            .settings-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .protocol-details {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo i {
+                font-size: 1.5rem;
+            }
+            
+            .header-title {
+                font-size: 1.2rem;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .stats-container {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .stat-item {
+                flex: 0 0 auto;
+                min-width: 100px;
+            }
+            
+            .buttons-container {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .calendar-btn, .settings-btn, .archive-btn, .data-btn {
+                margin-top: 0.5rem;
+                flex: 1;
+                min-width: 140px;
+                justify-content: center;
+            }
+            
+            .kanban-board {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .kanban-column {
+                min-width: calc(50% - 0.6rem);
+                max-width: calc(50% - 0.6rem);
+                margin-bottom: 0;
+            }
+            
+            .list-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+            }
+            
+            .calendar-day {
+                height: 60px;
+                font-size: 0.7rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+            }
+            
+            .card-image {
+                width: 100%;
+                height: 120px;
+                margin-top: 1rem;
+            }
+            
+            .card.list-view-card .card-image {
+                width: 60px;
+                height: 60px;
+                margin-top: 0;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .data-tabs {
+                flex-direction: column;
+            }
+            
+            .composition-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .composition-item input,
+            .composition-item select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <h1 class="header-title">Клональное микроразмножение растений | Лаборатория А-ПЛАНТА</h1>
+        </div>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Поиск по названию, меткам, средам..." oninput="filterCards()">
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="stats-bar">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-cultures">0</div>
+                    <div class="stat-label">Всего культур</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-plants">0</div>
+                    <div class="stat-label">Всего растений</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="in-propagation">0</div>
+                    <div class="stat-label">В размножении</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="in-adaptation">0</div>
+                    <div class="stat-label">В адаптации</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="needs-transplant">0</div>
+                    <div class="stat-label">Требуют пересадки</div>
+                </div>
+            </div>
+            <div class="buttons-container">
+                <button class="calendar-btn" onclick="openCalendar()">
+                    <i class="fas fa-calendar-alt"></i> Календарь
+                </button>
+                <button class="data-btn" onclick="openData()">
+                    <i class="fas fa-database"></i> Данные
+                </button>
+                <button class="settings-btn" onclick="openSettings()">
+                    <i class="fas fa-cog"></i> Настройки
+                </button>
+                <button class="archive-btn" onclick="openArchive()">
+                    <i class="fas fa-archive"></i> Архив
+                </button>
+            </div>
+        </div>
+        
+        <div class="view-toggle">
+            <button class="toggle-btn active" id="kanbanViewBtn" onclick="switchView('kanban')">
+                <i class="fas fa-th-large"></i> Канбан
+            </button>
+            <button class="toggle-btn" id="listViewBtn" onclick="switchView('list')">
+                <i class="fas fa-list"></i> Список
+            </button>
+        </div>
+        
+        <div class="kanban-board" id="kanbanBoard">
+            <!-- Колонки будут созданы здесь через JavaScript -->
+        </div>
+        
+        <div class="list-view" id="listView">
+            <!-- Список будет создан здесь через JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования карточки -->
+    <div class="modal" id="cardModal">
+        <div class="modal-content">
+            <div class="modal-left">
+                <h2 id="modalTitle">Добавить новую культуру</h2>
+                
+                <div class="ai-suggestion" id="aiSuggestion" style="display: none;">
+                    <h4>Предложение ИИ:</h4>
+                    <p id="suggestionText"></p>
+                </div>
+                
+                <form id="cardForm">
+                    <input type="hidden" id="cardId">
+                    <input type="hidden" id="cardStatus" value="Новая культура">
+                    <input type="hidden" id="previousExplants" value="0">
+                    
+                    <div class="form-group">
+                        <label for="plantName">Название культуры *</label>
+                        <input type="text" id="plantName" required onblur="getAIProtocol()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="latinName">Международное научное название (Lat.)</label>
+                        <input type="text" id="latinName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="startDate">Дата высадки *</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="totalExplants">Количество эксплантов *</label>
+                        <input type="number" id="totalExplants" min="1" required onchange="calculateMedium()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="jarsCount">Количество банок</label>
+                        <input type="number" id="jarsCount" min="0" onchange="calculateMedium()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="jarVolume">Объем одной банки (мл)</label>
+                        <input type="number" id="jarVolume" min="0" value="100" onchange="calculateMedium()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="coefficient">Коэффициент размножения</label>
+                        <input type="number" id="coefficient" step="0.01" min="0" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Гормоны</label>
+                        <div class="hormones-selector" id="hormonesSelector">
+                            <!-- Гормоны будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="medium">Питательная среда</label>
+                        <select id="medium" onchange="calculateMedium()">
+                            <option value="">Выберите среду</option>
+                            <!-- Опции будут добавлены через JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="medium-calculation">
+                        <h3>Расчет питательной среды</h3>
+                        <div class="calculation-result" id="mediumCalculationResult">
+                            Выберите среду и укажите количество банок для расчета
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="plantImage">Фотография культуры (URL)</label>
+                        <input type="text" id="plantImage" placeholder="Введите URL изображения">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Описание культуры</label>
+                        <textarea id="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-archive" onclick="archiveCard()">В архив</button>
+                        <div>
+                            <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-right">
+                <h3>История пересадок</h3>
+                <div class="history-list" id="historyList">
+                    <!-- История будет добавлена через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для ввода количества растений -->
+    <div class="count-input-modal" id="countInputModal">
+        <div class="count-input-content">
+            <h2 id="countModalTitle">Введите количество растений</h2>
+            <div class="form-group">
+                <label for="plantCount">Количество растений *</label>
+                <input type="number" id="plantCount" min="1" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeCountModal()">Отмена</button>
+                <button type="button" class="btn btn-primary" onclick="savePlantCount()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно календаря -->
+    <div class="calendar-modal" id="calendarModal">
+        <div class="calendar-content">
+            <h2>Календарь пересадок культур</h2>
+            <div class="current-month">
+                <button class="month-nav" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                <h3 id="currentMonthYear">Май 2023</h3>
+                <button class="month-nav" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Календарь будет сгенерирован здесь -->
+            </div>
+            
+            <div class="settings-actions" style="margin-top: 1.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeCalendar()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно данных -->
+    <div class="data-modal" id="dataModal">
+        <div class="data-content">
+            <h2>Данные лаборатории</h2>
+            
+            <div class="data-tabs">
+                <div class="data-tab active" onclick="switchDataTab('medium-composition')">Состав среды</div>
+                <div class="data-tab" onclick="switchDataTab('propagation-protocol')">Протокол размножения</div>
+            </div>
+            
+            <div class="data-tab-content active" id="medium-composition">
+                <h3>Состав питательных сред</h3>
+                <p>Управление рецептурами питательных сред для расчета необходимых объемов</p>
+                
+                <div class="form-group">
+                    <label for="medium-select">Выберите среду</label>
+                    <select id="medium-select">
+                        <option value="">Выберите среду</option>
+                        <!-- Опции будут добавлены через JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="medium-composition">
+                    <h4>Состав выбранной среды</h4>
+                    <div id="composition-list">
+                        <!-- Состав среды будет добавлен через JavaScript -->
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="addCompositionItem()">
+                        <i class="fas fa-plus"></i> Добавить компонент
+                    </button>
+                </div>
+                
+                <div class="settings-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeData()">Закрыть</button>
+                    <button type="button" class="btn btn-primary" onclick="saveMediumComposition()">Сохранить состав</button>
+                </div>
+            </div>
+            
+            <div class="data-tab-content" id="propagation-protocol">
+                <h3>Протоколы размножения</h3>
+                <p>История растений, успешно прошедших все стадии микроразмножения</p>
+                
+                <div class="protocol-list" id="protocolList">
+                    <!-- Протоколы будут добавлены через JavaScript -->
+                </div>
+                
+                <div class="settings-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeData()">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно настроек -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <h2>Настройки лаборатории</h2>
+            
+            <div class="settings-form">
+                <div class="settings-section">
+                    <h3>Гормоны</h3>
+                    
+                    <div class="compact-form">
+                        <input type="text" id="newHormone" placeholder="Название гормона">
+                        <input type="color" id="newHormoneColor" value="#b2dfdb" class="color-input">
+                        <button class="btn btn-primary" onclick="addNewHormone()">Добавить</button>
+                    </div>
+                    
+                    <div class="settings-list" id="hormonesSettingsList">
+                        <!-- Список гормонов будет добавлен через JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Питательные среды</h3>
+                    
+                    <div class="compact-form">
+                        <input type="text" id="newMedium" placeholder="Название среды">
+                        <input type="color" id="newMediumColor" value="#b2dfdb" class="color-input">
+                        <button class="btn btn-primary" onclick="addNewMedium()">Добавить</button>
+                    </div>
+                    
+                    <div class="settings-list" id="mediumSettingsList">
+                        <!-- Список сред будет добавлен через JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeSettings()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно архива -->
+    <div class="archive-modal" id="archiveModal">
+        <div class="archive-content">
+            <h2>Архив культур</h2>
+            
+            <div class="archive-list" id="archiveList">
+                <!-- Архивные карточки будут добавлены через JavaScript -->
+            </div>
+            
+            <div class="settings-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeArchive()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные для канбан-доски
+        const statuses = [
+            "Новая культура",
+            "Введение in vitro",
+            "Размножение",
+            "Адаптация А1",
+            "Адаптация А2",
+            "Адаптация ex vivo",
+            "Лечение / Контаминация"
+        ];
+        
+        // База знаний "ИИ" с протоколами для различных растений
+        const plantProtocols = {
+            "фиалка": {
+                hormones: "0,1 NAA, 0,5 BA",
+                medium: "Мурасиге-Скуга",
+                description: "Фиалки хорошо размножаются на среде Мурасиге-Скуга с добавлением цитокининов."
+            },
+            "орхидея": {
+                hormones: "0,2 NAA, 1,0 BA",
+                medium: "Андерсона",
+                description: "Для орхидей рекомендуется использовать среду Андерсона с комплексом гормонов."
+            },
+            "жасмин": {
+                hormones: "0,5 NAA, 0,5 BA",
+                medium: "WPM",
+                description: "Жасмин успешно размножается на среде WPM с добавлением ауксинов и цитокининов."
+            },
+            "лавр": {
+                hormones: "1,0 NAA, 0,1 BA",
+                medium: "Мурасиге-Скуга",
+                description: "Для лавра рекомендуется среда Мурасиге-Скуга с преобладанием ауксинов."
+            },
+            "хризантема": {
+                hormones: "0,2 NAA, 2,0 BA",
+                medium: "Мурасиге-Скуга",
+                description: "Хризантемы требуют высоких концентраций цитокининов для успешного размножения."
+            },
+            "альоказия": {
+                hormones: "0,5 NAA, 1,0 BA",
+                medium: "Мурасиге-Скуга",
+                description: "Альоказии хорошо размножаются на среде Мурасиге-Скуга с добавлением цитокининов и ауксинов."
+            }
+        };
+        
+        let cards = JSON.parse(localStorage.getItem('aPlantaCards')) || [];
+        let currentCardId = null;
+        let targetStatus = null;
+        let currentCalendarDate = new Date();
+        let hormonesList = JSON.parse(localStorage.getItem('hormonesList')) || [
+            { name: "1NAA", color: "#b2dfdb" },
+            { name: "1,5 BA", color: "#80cbc4" },
+            { name: "0,1 NAA", color: "#4db6ac" },
+            { name: "0,5 BA", color: "#26a69a" },
+            { name: "2,0 BA", color: "#00897b" }
+        ];
+        let mediumList = JSON.parse(localStorage.getItem('mediumList')) || [
+            { name: "Мурасиге-Скуга", color: "#b2dfdb" },
+            { name: "WPM", color: "#80cbc4" },
+            { name: "Андерсона", color: "#4db6ac" },
+            { name: "Другие", color: "#26a69a" }
+        ];
+        
+        // Данные для состава сред
+        let mediumCompositions = JSON.parse(localStorage.getItem('mediumCompositions')) || {};
+        
+        let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        let highlightedTag = null;
+        let currentDataTab = 'medium-composition';
+        let currentView = 'kanban'; // 'kanban' или 'list'
+        
+        // Инициализация приложения
+        function initApp() {
+            updateHormonesList();
+            updateMediumList();
+            renderKanbanBoard();
+            renderListView();
+            attachEventListeners();
+            updateStats();
+            
+            // Инициализация данных для раздела "Состав среды"
+            initMediumComposition();
+        }
+        
+        // Переключение между видами (канбан и список)
+        function switchView(view) {
+            currentView = view;
+            
+            const kanbanViewBtn = document.getElementById('kanbanViewBtn');
+            const listViewBtn = document.getElementById('listViewBtn');
+            const kanbanBoard = document.getElementById('kanbanBoard');
+            const listView = document.getElementById('listView');
+            
+            if (view === 'kanban') {
+                kanbanViewBtn.classList.add('active');
+                listViewBtn.classList.remove('active');
+                kanbanBoard.style.display = 'flex';
+                listView.style.display = 'none';
+            } else {
+                kanbanViewBtn.classList.remove('active');
+                listViewBtn.classList.add('active');
+                kanbanBoard.style.display = 'none';
+                listView.style.display = 'flex';
+                renderListView();
+            }
+        }
+        
+        // Отрисовка списка
+        function renderListView() {
+            const listView = document.getElementById('listView');
+            listView.innerHTML = '';
+            
+            // Показываем все статусы
+            statuses.forEach(status => {
+                const column = document.createElement('div');
+                column.className = 'list-column';
+                column.dataset.status = status;
+                
+                const columnHeader = document.createElement('div');
+                columnHeader.className = 'column-header';
+                
+                const columnTitle = document.createElement('h2');
+                columnTitle.textContent = status;
+                
+                columnHeader.appendChild(columnTitle);
+                
+                // Кнопка добавления новой карточки только для первого статуса
+                if (status === "Новая культура") {
+                    const addButton = document.createElement('button');
+                    addButton.className = 'add-card-btn';
+                    addButton.innerHTML = '<i class="fas fa-plus"></i> Добавить';
+                    addButton.onclick = () => openModal();
+                    
+                    columnHeader.appendChild(addButton);
+                }
+                
+                const cardsContainer = document.createElement('div');
+                cardsContainer.className = 'list-cards';
+                cardsContainer.id = `list-cards-${status.replace(/\s+/g, '-')}`;
+                
+                // Добавляем карточки в колонку (только неархивированные)
+                const statusCards = cards.filter(card => card.status === status && !card.archived);
+                statusCards.forEach(card => {
+                    cardsContainer.appendChild(createListCardElement(card));
+                });
+                
+                column.appendChild(columnHeader);
+                column.appendChild(cardsContainer);
+                
+                listView.appendChild(column);
+            });
+        }
+        
+        // Создание элемента карточки для списка
+        function createListCardElement(card) {
+            const cardElement = document.createElement('div');
+            cardElement.className = 'card list-view-card';
+            if (card.archived) {
+                cardElement.classList.add('archived');
+            }
+            cardElement.dataset.id = card.id;
+            
+            let html = `<div class="card-content">`;
+            
+            if (card.plantImage) {
+                html += `<div class="card-image"><img src="${card.plantImage}" alt="${card.plantName}"></div>`;
+            } else {
+                html += `<div class="card-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-seedling" style="font-size: 1.5rem; color: #ccc;"></i>
+                </div>`;
+            }
+            
+            html += `<div class="card-text">`;
+            html += `<h3>${card.plantName}</h3>`;
+            
+            if (card.latinName) {
+                html += `<p class="latin-name">${card.latinName}</p>`;
+            }
+            
+            html += `</div>`; // закрываем card-text
+            html += `</div>`; // закрываем card-content
+            
+            cardElement.innerHTML = html;
+            
+            // Добавляем обработчик для редактирования при двойном клике
+            cardElement.ondblclick = () => openModal(card.id);
+            
+            return cardElement;
+        }
+        
+        // Обновление списка гормонов
+        function updateHormonesList() {
+            const hormonesSelector = document.getElementById('hormonesSelector');
+            hormonesSelector.innerHTML = '';
+            
+            hormonesList.forEach(hormone => {
+                const hormoneOption = document.createElement('div');
+                hormoneOption.className = 'hormone-option';
+                hormoneOption.innerHTML = `
+                    <div class="hormone-color" style="background-color: ${hormone.color}"></div>
+                    <span>${hormone.name}</span>
+                `;
+                
+                hormoneOption.addEventListener('click', () => {
+                    hormoneOption.classList.toggle('selected');
+                });
+                
+                hormonesSelector.appendChild(hormoneOption);
+            });
+            
+            // Обновляем список в настройках
+            const hormonesSettingsList = document.getElementById('hormonesSettingsList');
+            hormonesSettingsList.innerHTML = '';
+            
+            hormonesList.forEach((hormone, index) => {
+                const item = document.createElement('div');
+                item.className = 'settings-item';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; width: 70%;">
+                        <input type="color" value="${hormone.color}" onchange="updateHormoneColor(${index}, this.value)" class="color-input">
+                        <input type="text" class="edit-input" value="${hormone.name}" onchange="updateHormoneName(${index}, this.value)" style="margin-left: 0.5rem;">
+                    </div>
+                    <div class="settings-item-actions">
+                        <button class="btn btn-danger" onclick="removeHormone(${index})">X</button>
+                    </div>
+                `;
+                hormonesSettingsList.appendChild(item);
+            });
+        }
+        
+        // Обновление списка сред
+        function updateMediumList() {
+            const mediumSelect = document.getElementById('medium');
+            // Сохраняем выбранное значение
+            const selectedValue = mediumSelect.value;
+            
+            // Очищаем и добавляем стандартные опции
+            mediumSelect.innerHTML = '<option value="">Выберите среду</option>';
+            
+            mediumList.forEach(medium => {
+                const option = document.createElement('option');
+                option.value = medium.name;
+                option.textContent = medium.name;
+                option.style.backgroundColor = medium.color;
+                mediumSelect.appendChild(option);
+            });
+            
+            // Восстанавливаем выбранное значение, если оно все еще существует
+            if (mediumList.some(m => m.name === selectedValue)) {
+                mediumSelect.value = selectedValue;
+            }
+            
+            // Обновляем список в настройках
+            const mediumSettingsList = document.getElementById('mediumSettingsList');
+            mediumSettingsList.innerHTML = '';
+            
+            mediumList.forEach((medium, index) => {
+                const item = document.createElement('div');
+                item.className = 'settings-item';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; width: 70%;">
+                        <input type="color" value="${medium.color}" onchange="updateMediumColor(${index}, this.value)" class="color-input">
+                        <input type="text" class="edit-input" value="${medium.name}" onchange="updateMediumName(${index}, this.value)" style="margin-left: 0.5rem;">
+                    </div>
+                    <div class="settings-item-actions">
+                        <button class="btn btn-danger" onclick="removeMedium(${index})">X</button>
+                    </div>
+                `;
+                mediumSettingsList.appendChild(item);
+            });
+            
+            // Обновляем список сред в разделе "Данные"
+            const mediumDataSelect = document.getElementById('medium-select');
+            if (mediumDataSelect) {
+                mediumDataSelect.innerHTML = '<option value="">Выберите среду</option>';
+                
+                mediumList.forEach(medium => {
+                    const option = document.createElement('option');
+                    option.value = medium.name;
+                    option.textContent = medium.name;
+                    mediumDataSelect.appendChild(option);
+                });
+            }
+        }
+        
+        // Инициализация состава сред
+        function initMediumComposition() {
+            const mediumSelect = document.getElementById('medium-select');
+            if (mediumSelect) {
+                mediumSelect.addEventListener('change', function() {
+                    loadMediumComposition(this.value);
+                });
+            }
+        }
+        
+        // Загрузка состава среды
+        function loadMediumComposition(mediumName) {
+            const compositionList = document.getElementById('composition-list');
+            compositionList.innerHTML = '';
+            
+            if (!mediumName) return;
+            
+            // Загружаем сохраненный состав или создаем пустой
+            if (!mediumCompositions[mediumName]) {
+                mediumCompositions[mediumName] = [];
+            }
+            
+            // Отображаем состав
+            mediumCompositions[mediumName].forEach((item, index) => {
+                const compositionItem = document.createElement('div');
+                compositionItem.className = 'composition-item';
+                compositionItem.innerHTML = `
+                    <input type="text" placeholder="Название компонента" value="${item.name}" onchange="updateCompositionItemName(${index}, this.value)">
+                    <input type="number" placeholder="Количество" value="${item.amount}" step="0.001" onchange="updateCompositionItemAmount(${index}, this.value)">
+                    <select onchange="updateCompositionItemUnit(${index}, this.value)">
+                        <option value="mg/L" ${item.unit === 'mg/L' ? 'selected' : ''}>мг/л</option>
+                        <option value="g/L" ${item.unit === 'g/L' ? 'selected' : ''}>г/л</option>
+                        <option value="μM" ${item.unit === 'μM' ? 'selected' : ''}>μM</option>
+                        <option value="mL" ${item.unit === 'mL' ? 'selected' : ''}>мл</option>
+                    </select>
+                    <button class="btn btn-danger" onclick="removeCompositionItem(${index})"><i class="fas fa-trash"></i></button>
+                `;
+                compositionList.appendChild(compositionItem);
+            });
+        }
+        
+        // Добавление компонента состава среды
+        function addCompositionItem() {
+            const mediumSelect = document.getElementById('medium-select');
+            if (!mediumSelect.value) {
+                alert('Сначала выберите среду');
+                return;
+            }
+            
+            if (!mediumCompositions[mediumSelect.value]) {
+                mediumCompositions[mediumSelect.value] = [];
+            }
+            
+            mediumCompositions[mediumSelect.value].push({
+                name: '',
+                amount: 0,
+                unit: 'mg/L'
+            });
+            
+            loadMediumComposition(mediumSelect.value);
+        }
+        
+        // Обновление названия компонента состава
+        function updateCompositionItemName(index, value) {
+            const mediumSelect = document.getElementById('medium-select');
+            if (mediumSelect.value && mediumCompositions[mediumSelect.value]) {
+                mediumCompositions[mediumSelect.value][index].name = value;
+            }
+        }
+        
+        // Обновление количества компонента состава
+        function updateCompositionItemAmount(index, value) {
+            const mediumSelect = document.getElementById('medium-select');
+            if (mediumSelect.value && mediumCompositions[mediumSelect.value]) {
+                mediumCompositions[mediumSelect.value][index].amount = parseFloat(value) || 0;
+            }
+        }
+        
+        // Обновление единицы измерения компонента состава
+        function updateCompositionItemUnit(index, value) {
+            const mediumSelect = document.getElementById('medium-select');
+            if (mediumSelect.value && mediumCompositions[mediumSelect.value]) {
+                mediumCompositions[mediumSelect.value][index].unit = value;
+            }
+        }
+        
+        // Удаление компонента состава
+        function removeCompositionItem(index) {
+            const mediumSelect = document.getElementById('medium-select');
+            if (mediumSelect.value && mediumCompositions[mediumSelect.value]) {
+                mediumCompositions[mediumSelect.value].splice(index, 1);
+                loadMediumComposition(mediumSelect.value);
+            }
+        }
+        
+        // Сохранение состава среды
+        function saveMediumComposition() {
+            localStorage.setItem('mediumCompositions', JSON.stringify(mediumCompositions));
+            alert('Состав среды сохранен');
+        }
+        
+        // Переключение вкладок в раздееле "Данные"
+        function switchDataTab(tabId) {
+            // Скрываем все вкладки
+            document.querySelectorAll('.data-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убираем активность у всех вкладок
+            document.querySelectorAll('.data-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Активируем выбранную вкладку
+            document.getElementById(tabId).classList.add('active');
+            
+            // Активируем соответствующую кнопку
+            document.querySelectorAll('.data-tab').forEach(tab => {
+                if (tab.textContent === 'Состав среды' && tabId === 'medium-composition') {
+                    tab.classList.add('active');
+                } else if (tab.textContent === 'Протокол размножения' && tabId === 'propagation-protocol') {
+                    tab.classList.add('active');
+                }
+            });
+            
+            currentDataTab = tabId;
+            
+            // Если выбрана вкладка протоколов, загружаем их
+            if (tabId === 'propagation-protocol') {
+                loadPropagationProtocols();
+            }
+        }
+        
+        // Загрузка протоколов размножения
+        function loadPropagationProtocols() {
+            const protocolList = document.getElementById('protocolList');
+            protocolList.innerHTML = '';
+            
+            // Находим растения, которые прошли все стадии
+            const completedPlants = cards.filter(card => 
+                card.status === "Адаптация ex vivo" && !card.archived
+            );
+            
+            if (completedPlants.length === 0) {
+                protocolList.innerHTML = '<p>Нет растений, завершивших все стадии размножения</p>';
+                return;
+            }
+            
+            completedPlants.forEach(plant => {
+                const protocolItem = document.createElement('div');
+                protocolItem.className = 'protocol-item';
+                
+                let protocolHtml = `
+                    <div class="protocol-header">
+                        <h3>${plant.plantName}</h3>
+                        <span class="latin-name">${plant.latinName || ''}</span>
+                    </div>
+                    <div class="protocol-details">
+                        <div class="protocol-detail">
+                            <h4>Общая информация</h4>
+                            <p>Начало: ${formatDate(plant.startDate)}</p>
+                            <p>Количество эксплантов: ${plant.totalExplants}</p>
+                            <p>Коэффициент размножения: ${plant.coefficient || '1.00'}x</p>
+                        </div>
+                `;
+                
+                // Добавляем историю пересадок, если она есть
+                if (plant.history && plant.history.length > 0) {
+                    protocolHtml += `<div class="protocol-detail">
+                        <h4>История пересадок</h4>`;
+                    
+                    plant.history.forEach(record => {
+                        protocolHtml += `<p>${formatDate(record.date)} - ${record.status}: ${record.explants} экспл.</p>`;
+                    });
+                    
+                    protocolHtml += `</div>`;
+                }
+                
+                // Добавляем информацию о средах и гормонах
+                protocolHtml += `
+                        <div class="protocol-detail">
+                            <h4>Использованные среды</h4>
+                            <p>${plant.medium || 'Не указана'}</p>
+                        </div>
+                        <div class="protocol-detail">
+                            <h4>Использованные гормоны</h4>
+                            <p>${plant.hormones || 'Не указаны'}</p>
+                        </div>
+                    </div>
+                `;
+                
+                protocolItem.innerHTML = protocolHtml;
+                protocolList.appendChild(protocolItem);
+            });
+        }
+        
+        // Отрисовка канбан-доски
+        function renderKanbanBoard() {
+            const kanbanBoard = document.getElementById('kanbanBoard');
+            kanbanBoard.innerHTML = '';
+            
+            // Показываем все статусы
+            const visibleStatuses = statuses;
+            
+            visibleStatuses.forEach(status => {
+                const column = document.createElement('div');
+                column.className = 'kanban-column';
+                column.dataset.status = status;
+                
+                const columnHeader = document.createElement('div');
+                columnHeader.className = 'column-header';
+                
+                const columnTitle = document.createElement('h2');
+                columnTitle.textContent = status;
+                
+                columnHeader.appendChild(columnTitle);
+                
+                // Кнопка добавления новой карточки только для первого статуса
+                if (status === "Новая культура") {
+                    const addButton = document.createElement('button');
+                    addButton.className = 'add-card-btn';
+                    addButton.innerHTML = '<i class="fas fa-plus"></i> Добавить';
+                    addButton.onclick = () => openModal();
+                    
+                    columnHeader.appendChild(addButton);
+                }
+                
+                const cardsContainer = document.createElement('div');
+                cardsContainer.className = 'kanban-cards';
+                cardsContainer.id = `cards-${status.replace(/\s+/g, '-')}`;
+                
+                // Добавляем карточки в колонку (только неархивированные)
+                const statusCards = cards.filter(card => card.status === status && !card.archived);
+                statusCards.forEach(card => {
+                    cardsContainer.appendChild(createCardElement(card));
+                });
+                
+                column.appendChild(columnHeader);
+                column.appendChild(cardsContainer);
+                
+                kanbanBoard.appendChild(column);
+            });
+            
+            makeCardsDraggable();
+        }
+        
+        // Создание элемента карточки
+        function createCardElement(card) {
+            const cardElement = document.createElement('div');
+            cardElement.className = 'card';
+            if (card.archived) {
+                cardElement.classList.add('archived');
+            }
+            cardElement.draggable = true;
+            cardElement.dataset.id = card.id;
+            
+            let html = `<div class="card-content">`;
+            html += `<div class="card-header">`;
+            html += `<div class="card-text">`;
+            html += `<h3>${card.plantName}</h3>`;
+            
+            if (card.latinName) {
+                html += `<p class="latin-name">${card.latinName}</p>`;
+            }
+            html += `</div>`; // закрываем card-text
+            
+            if (card.plantImage) {
+                html += `<div class="card-image"><img src="${card.plantImage}" alt="${card.plantName}"></div>`;
+            } else {
+                html += `<div class="card-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-seedling" style="font-size: 1.5rem; color: #ccc;"></i>
+                </div>`;
+            }
+            
+            html += `</div>`; // закрываем card-header
+            
+            // Дата высадки и таймер (перемещены выше)
+            if (card.startDate) {
+                html += `<div class="timer-info">`;
+                html += `<p><strong>Дата высадки:</strong> ${formatDate(card.startDate)}</p>`;
+                
+                const daysLeft = calculateDaysLeft(card.startDate);
+                const timerStatus = getTimerStatus(daysLeft);
+                html += `<div class="timer ${timerStatus}">`;
+                
+                if (daysLeft > 0) {
+                    html += `<i class="fas fa-clock"></i> Осталось ${daysLeft} дней`;
+                } else if (daysLeft === 0) {
+                    html += `<i class="fas fa-exclamation-circle"></i> Срок истекает сегодня`;
+                } else {
+                    html += `<i class="fas fa-exclamation-triangle"></i> Просрочено на ${Math.abs(daysLeft)} дней`;
+                }
+                
+                html += `</div></div>`;
+            }
+            
+            // Количество эксплантатов и банок (перемещены ниже)
+            if (card.totalExplants) {
+                html += `<p>Эксплантов: ${card.totalExplants}</p>`;
+            }
+            
+            if (card.jarsCount) {
+                html += `<p>Банок: ${card.jarsCount}</p>`;
+            }
+            
+            if (card.coefficient && card.coefficient > 1) {
+                html += `<p class="coefficient">Коэффициент: ${card.coefficient}x</p>`;
+            }
+            
+            if (card.hormones || card.medium) {
+                html += `<div class="tags">`;
+                if (card.hormones) {
+                    const hormones = card.hormones.split(',');
+                    hormones.forEach(hormone => {
+                        const trimmedHormone = hormone.trim();
+                        const hormoneData = hormonesList.find(h => h.name === trimmedHormone);
+                        const color = hormoneData ? hormoneData.color : '#b2dfdb';
+                        html += `<span class="tag" data-type="hormone" data-value="${trimmedHormone}" style="background-color: ${color}">`;
+                        html += `<span class="tag-color" style="background-color: ${color}"></span>`;
+                        html += `${trimmedHormone}</span>`;
+                    });
+                }
+                if (card.medium) {
+                    const mediumData = mediumList.find(m => m.name === card.medium);
+                    const color = mediumData ? mediumData.color : '#b2dfdb';
+                    html += `<span class="tag" data-type="medium" data-value="${card.medium}" style="background-color: ${color}">`;
+                    html += `<span class="tag-color" style="background-color: ${color}"></span>`;
+                    html += `${card.medium}</span>`;
+                }
+                html += `</div>`;
+            }
+            
+            html += `</div>`; // закрываем card-content
+            
+            cardElement.innerHTML = html;
+            
+            // Добавляем обработчик для редактирования при двойном клике
+            cardElement.ondblclick = () => openModal(card.id);
+            
+            // Добавляем обработчики для тегов
+            const tags = cardElement.querySelectorAll('.tag');
+            tags.forEach(tag => {
+                tag.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const type = tag.getAttribute('data-type');
+                    const value = tag.getAttribute('data-value');
+                    
+                    // Если уже выделен этот тег, снимаем выделение
+                    if (highlightedTag && highlightedTag.type === type && highlightedTag.value === value) {
+                        clearHighlights();
+                        highlightedTag = null;
+                    } else {
+                        highlightCardsByTag(type, value);
+                        highlightedTag = { type, value };
+                    }
+                });
+            });
+            
+            return cardElement;
+        }
+        
+        // Подсветка карточек по тегу
+        function highlightCardsByTag(type, value) {
+            // Сначала снимаем подсветку со всех карточек
+            clearHighlights();
+            
+            // Подсвечиваем карточки с соответствующим тегом
+            if (type === 'hormone') {
+                cards.forEach(card => {
+                    if (card.hormones && card.hormones.includes(value)) {
+                        const cardElement = document.querySelector(`.card[data-id="${card.id}"]`);
+                        if (cardElement) {
+                            cardElement.classList.add('highlighted');
+                        }
+                    }
+                });
+            } else if (type === 'medium') {
+                cards.forEach(card => {
+                    if (card.medium === value) {
+                        const cardElement = document.querySelector(`.card[data-id="${card.id}"]`);
+                        if (cardElement) {
+                            cardElement.classList.add('highlighted');
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Снятие подсветки со всех карточек
+        function clearHighlights() {
+            const allCards = document.querySelectorAll('.card');
+            allCards.forEach(card => {
+                card.classList.remove('highlighted');
+            });
+        }
+        
+        // Форматирование даты
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU');
+        }
+        
+        // Расчет оставшихся дней
+        function calculateDaysLeft(startDate) {
+            if (!startDate) return null;
+            
+            const start = new Date(startDate);
+            const today = new Date();
+            const endDate = new Date(start);
+            endDate.setDate(start.getDate() + 21);
+            
+            const diffTime = endDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            return diffDays;
+        }
+        
+        // Определение статуса таймера
+        function getTimerStatus(daysLeft) {
+            if (daysLeft === null) return 'normal-term';
+            if (daysLeft <= 0) return 'danger-term';
+            if (daysLeft <= 3) return 'warning-term';
+            return 'normal-term';
+        }
+        
+        // Настройка перетаскивания карточек
+        function makeCardsDraggable() {
+            const cardElements = document.querySelectorAll('.card');
+            const columns = document.querySelectorAll('.kanban-column');
+            
+            cardElements.forEach(card => {
+                card.addEventListener('dragstart', dragStart);
+            });
+            
+            columns.forEach(column => {
+                column.addEventListener('dragover', dragOver);
+                column.addEventListener('dragenter', dragEnter);
+                column.addEventListener('dragleave', dragLeave);
+                column.addEventListener('drop', drop);
+            });
+        }
+        
+        function dragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.id);
+        }
+        
+        function dragOver(e) {
+            e.preventDefault();
+        }
+        
+        function dragEnter(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        }
+        
+        function dragLeave() {
+            this.classList.remove('drag-over');
+        }
+        
+        function drop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            const id = e.dataTransfer.getData('text/plain');
+            const card = cards.find(c => c.id == id);
+            const newStatus = this.dataset.status;
+            
+            if (card && card.status !== newStatus) {
+                // Для определенных переходов запрашиваем количество растений
+                if ((card.status === "Введение in vitro" && newStatus === "Размножение") ||
+                    (card.status === "Размножение" && newStatus === "Адаптация А1") ||
+                    (card.status === "Адаптация А1" && newStatus === "Адаптация А2") ||
+                    (card.status === "Адаптация А2" && newStatus === "Адаптация ex vivo")) {
+                    
+                    currentCardId = card.id;
+                    targetStatus = newStatus;
+                    document.getElementById('countModalTitle').textContent = `Введите количество растений для перехода в "${newStatus}"`;
+                    document.getElementById('plantCount').value = card.totalExplants || '';
+                    openCountModal();
+                    return;
+                }
+                
+                // Для остальных переходов просто меняем статус (без изменения даты)
+                moveCardToStatus(card, newStatus);
+            }
+        }
+        
+        // Перемещение карточки в новый статус
+        function moveCardToStatus(card, newStatus, newCount = null) {
+            // Сохраняем предыдущее количество для расчета коэффициента
+            const previousCount = card.totalExplants;
+            
+            // Обновляем количество, если указано новее
+            if (newCount !== null) {
+                card.totalExplants = newCount;
+                
+                // Рассчитываем коэффициент, если это не первая стадия
+                if (card.status !== "Новая культура") {
+                    card.coefficient = (newCount / previousCount).toFixed(2);
+                } else {
+                    card.coefficient = "1.00";
+                }
+                
+                // Добавляем запись в историю
+                if (!card.history) {
+                    card.history = [];
+                }
+                
+                card.history.push({
+                    date: new Date().toISOString().split('T')[0],
+                    status: newStatus,
+                    explants: newCount,
+                    hormones: card.hormones,
+                    medium: card.medium,
+                    coefficient: card.coefficient
+                });
+            }
+            
+            // Меняем статус (дата остается прежней)
+            card.status = newStatus;
+            
+            saveCards();
+            renderKanbanBoard();
+            if (currentView === 'list') renderListView();
+            updateStats();
+        }
+        
+        // Открытие модального окна
+        function openModal(cardId = null) {
+            const modal = document.getElementById('cardModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const form = document.getElementById('cardForm');
+            const historyList = document.getElementById('historyList');
+            const archiveBtn = document.querySelector('.btn-archive');
+            
+            if (cardId) {
+                // Редактирование существующей карточки
+                modalTitle.textContent = 'Редактировать культуру';
+                const card = cards.find(c => c.id == cardId);
+                if (card) {
+                    document.getElementById('cardId').value = card.id;
+                    document.getElementById('plantName').value = card.plantName || '';
+                    document.getElementById('latinName').value = card.latinName || '';
+                    document.getElementById('startDate').value = card.startDate || '';
+                    document.getElementById('totalExplants').value = card.totalExplants || '';
+                    document.getElementById('previousExplants').value = card.totalExplants || '';
+                    document.getElementById('jarsCount').value = card.jarsCount || '';
+                    document.getElementById('coefficient').value = card.coefficient || '';
+                    
+                    // Устанавливаем выбранные гормоны
+                    const hormonesSelector = document.getElementById('hormonesSelector');
+                    const selectedHormones = card.hormones ? card.hormones.split(',').map(h => h.trim()) : [];
+                    
+                    hormonesSelector.querySelectorAll('.hormone-option').forEach(option => {
+                        const hormoneName = option.querySelector('span').textContent;
+                        if (selectedHormones.includes(hormoneName)) {
+                            option.classList.add('selected');
+                        } else {
+                            option.classList.remove('selected');
+                        }
+                    });
+                    
+                    document.getElementById('medium').value = card.medium || '';
+                    document.getElementById('plantImage').value = card.plantImage || '';
+                    document.getElementById('description').value = card.description || '';
+                    document.getElementById('cardStatus').value = card.status || 'Новая культура';
+                    
+                    // Показываем/скрываем кнопку архива в зависимости от статуса карточки
+                    if (card.archived) {
+                        archiveBtn.style.display = 'none';
+                    } else {
+                        archiveBtn.style.display = 'block';
+                    }
+                    
+                    // Отображаем историю
+                    renderHistoryList(card.history || []);
+                    
+                    // Для существующих карточек скрываем предложение ИИ
+                    document.getElementById('aiSuggestion').style.display = 'none';
+                    
+                    // Рассчитываем среду
+                    calculateMedium();
+                }
+            } else {
+                // Создание новой карточки
+                modalTitle.textContent = 'Добавить новую культуру';
+                form.reset();
+                document.getElementById('cardId').value = '';
+                document.getElementById('cardStatus').value = 'Новая культура';
+                document.getElementById('startDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('coefficient').value = '1.00';
+                document.getElementById('jarVolume').value = '100';
+                
+                // Сбрасываем выбор гормонов
+                const hormonesSelector = document.getElementById('hormonesSelector');
+                hormonesSelector.querySelectorAll('.hormone-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Скрываем кнопку архива для новых карточек
+                archiveBtn.style.display = 'none';
+                
+                // Очищаем историю
+                renderHistoryList([]);
+                
+                // Сбрасываем расчет среды
+                document.getElementById('mediumCalculationResult').textContent = 'Выберите среду и укажите количество банок для расчета';
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Расчет необходимого количества среды
+        function calculateMedium() {
+            const mediumName = document.getElementById('medium').value;
+            const jarsCount = parseInt(document.getElementById('jarsCount').value) || 0;
+            const jarVolume = parseInt(document.getElementById('jarVolume').value) || 0;
+            const totalVolume = jarsCount * jarVolume;
+            
+            const resultElement = document.getElementById('mediumCalculationResult');
+            
+            if (!mediumName || jarsCount === 0) {
+                resultElement.textContent = 'Выберите среду и укажите количество банок для расчета';
+                return;
+            }
+            
+            if (!mediumCompositions[mediumName] || mediumCompositions[mediumName].length === 0) {
+                resultElement.innerHTML = `Для среды <strong>${mediumName}</strong> требуется <strong>${totalVolume} мл</strong> питательной среды.<br>
+                Состав среды не указан. Добавьте его в разделе "Данные".`;
+                return;
+            }
+            
+            let resultHtml = `Для среды <strong>${mediumName}</strong> требуется <strong>${totalVolume} мл</strong> питательной среды.<br>
+                            Состав на этот объем:<br><ul>`;
+            
+            mediumCompositions[mediumName].forEach(component => {
+                const amount = (component.amount * totalVolume / 1000).toFixed(2); // Расчет на указанный объем
+                resultHtml += `<li>${component.name}: ${amount} ${component.unit}</li>`;
+            });
+            
+            resultHtml += '</ul>';
+            
+            resultElement.innerHTML = resultHtml;
+        }
+        
+        // Отрисовка истории пересадок
+        function renderHistoryList(history) {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            if (history && history.length > 0) {
+                history.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <div class="history-date">${formatDate(item.date)} - ${item.status}</div>
+                        <div class="history-details">
+                            <p><strong>Эксплантов:</strong> ${item.explants}</p>
+                            ${item.hormones ? `<p><strong>Гормоны:</strong> ${item.hormones}</p>` : ''}
+                            ${item.medium ? `<p><strong>Среда:</strong> ${item.medium}</p>` : ''}
+                            <p><strong>Коэффициент:</strong> ${item.coefficient}x</p>
+                        </div>
+                    `;
+                    historyList.appendChild(historyItem);
+                });
+            } else {
+                historyList.innerHTML = '<p>История пересадок отсутствует</p>';
+            }
+            
+            // Прокручиваем до низа истории
+            historyList.scrollTop = historyList.scrollHeight;
+        }
+        
+        // Закрытие модального окна
+        function closeModal() {
+            document.getElementById('cardModal').style.display = 'none';
+            document.getElementById('aiSuggestion').style.display = 'none';
+        }
+        
+        // Отправка карточки в архив
+        function archiveCard() {
+            const cardId = document.getElementById('cardId').value;
+            if (!cardId) return;
+            
+            if (confirm('Вы уверены, что хотите отправить эту карточку в архив?')) {
+                const card = cards.find(c => c.id == cardId);
+                if (card) {
+                    card.archived = true;
+                    saveCards();
+                    renderKanbanBoard();
+                    if (currentView === 'list') renderListView();
+                    updateStats();
+                    closeModal();
+                }
+            }
+        }
+        
+        // Восстановление карточки из архива
+        function restoreCard(cardId) {
+            const card = cards.find(c => c.id == cardId);
+            if (card) {
+                card.archived = false;
+                card.status = "Новая культура";
+                saveCards();
+                renderKanbanBoard();
+                if (currentView === 'list') renderListView();
+                updateStats();
+                renderArchive();
+            }
+        }
+        
+        // Открытие модального окна для ввода количества
+        function openCountModal() {
+            document.getElementById('countInputModal').style.display = 'flex';
+        }
+        
+        // Закрытие модального окна для ввода количества
+        function closeCountModal() {
+            document.getElementById('countInputModal').style.display = 'none';
+            currentCardId = null;
+            targetStatus = null;
+        }
+        
+        // Сохранение количества растений
+        function savePlantCount() {
+            const plantCount = parseInt(document.getElementById('plantCount').value);
+            
+            if (!plantCount || plantCount < 1) {
+                alert('Пожалуйста, укажите корректное количество растений');
+                return;
+            }
+            
+            const card = cards.find(c => c.id == currentCardId);
+            if (card) {
+                moveCardToStatus(card, targetStatus, plantCount);
+            }
+            
+            closeCountModal();
+        }
+        
+        // Имитация ИИ для поиска протокола размножения
+        function getAIProtocol() {
+            const plantName = document.getElementById('plantName').value.toLowerCase();
+            const suggestionDiv = document.getElementById('aiSuggestion');
+            const suggestionText = document.getElementById('suggestionText');
+            
+            if (!plantName) {
+                suggestionDiv.style.display = 'none';
+                return;
+            }
+            
+            // Поиск совпадений в базе знаний
+            let foundProtocol = null;
+            for (const key in plantProtocols) {
+                if (plantName.includes(key)) {
+                    foundProtocol = plantProtocols[key];
+                    break;
+                }
+            }
+            
+            if (foundProtocol) {
+                suggestionText.textContent = foundProtocol.description;
+                
+                // Устанавливаем выбранные гормоны
+                const hormonesSelector = document.getElementById('hormonesSelector');
+                const hormones = foundProtocol.hormones.split(',');
+                
+                hormonesSelector.querySelectorAll('.hormone-option').forEach(option => {
+                    const hormoneName = option.querySelector('span').textContent;
+                    if (hormones.some(h => h.trim() === hormoneName)) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+                
+                document.getElementById('medium').value = foundProtocol.medium;
+                document.getElementById('description').value = foundProtocol.description;
+                suggestionDiv.style.display = 'block';
+            } else {
+                suggestionText.textContent = "Для данной культуры не найден конкретный протокол. Рекомендуется использовать стандартную среду Мурасиге-Скуга с гормонами 0,1 NAA и 0,5 BA для начала экспериментов.";
+                
+                // Устанавливаем выбранные гормоны по умолчанию
+                const hormonesSelector = document.getElementById('hormonesSelector');
+                
+                hormonesSelector.querySelectorAll('.hormone-option').forEach(option => {
+                    const hormoneName = option.querySelector('span').textContent;
+                    if (hormoneName === "0,1 NAA" || hormoneName === "0,5 BA") {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+                
+                document.getElementById('medium').value = "Мурасиге-Скуга";
+                suggestionDiv.style.display = 'block';
+            }
+            
+            // После установки среды рассчитываем необходимое количество
+            calculateMedium();
+        }
+        
+        // Сохранение карточки
+        function saveCard(e) {
+            e.preventDefault();
+            
+            const cardId = document.getElementById('cardId').value;
+            const plantName = document.getElementById('plantName').value;
+            const latinName = document.getElementById('latinName').value;
+            const startDate = document.getElementById('startDate').value;
+            const totalExplants = document.getElementById('totalExplants').value;
+            const previousExplants = document.getElementById('previousExplants').value;
+            const jarsCount = document.getElementById('jarsCount').value;
+            const coefficient = document.getElementById('coefficient').value;
+            
+            // Получаем выбранные гормоны
+            const hormonesSelector = document.getElementById('hormonesSelector');
+            const selectedHormones = [];
+            hormonesSelector.querySelectorAll('.hormone-option.selected').forEach(option => {
+                selectedHormones.push(option.querySelector('span').textContent);
+            });
+            const hormones = selectedHormones.join(', ');
+            
+            const medium = document.getElementById('medium').value;
+            const plantImage = document.getElementById('plantImage').value;
+            const description = document.getElementById('description').value;
+            const status = document.getElementById('cardStatus').value;
+            
+            if (!plantName) {
+                alert('Пожалуйста, введите название культуры');
+                return;
+            }
+            
+            if (!startDate) {
+                alert('Пожалуйста, укажите дату высадки');
+                return;
+            }
+            
+            if (!totalExplants || totalExplants < 1) {
+                alert('Пожалуйста, укажите количество эксплантов (не менее 1)');
+                return;
+            }
+            
+            const cardData = {
+                id: cardId || Date.now().toString(),
+                plantName,
+                latinName,
+                startDate,
+                totalExplants: parseInt(totalExplants),
+                jarsCount: jarsCount ? parseInt(jarsCount) : 0,
+                coefficient: coefficient ? parseFloat(coefficient) : 1.00,
+                hormones,
+                medium,
+                plantImage,
+                description,
+                status,
+                archived: false
+            };
+            
+            if (cardId) {
+                // Сохраняем историю при редактировании существующей карточки
+                const existingCard = cards.find(c => c.id == cardId);
+                if (existingCard && existingCard.history) {
+                    cardData.history = existingCard.history;
+                }
+                if (existingCard && existingCard.archived) {
+                    cardData.archived = existingCard.archived;
+                }
+                
+                // Обновление существующей карточки
+                const index = cards.findIndex(c => c.id == cardId);
+                if (index !== -1) {
+                    cards[index] = cardData;
+                }
+            } else {
+                // Добавление новой карточки
+                cards.push(cardData);
+            }
+            
+            saveCards();
+            renderKanbanBoard();
+            if (currentView === 'list') renderListView();
+            updateStats();
+            closeModal();
+        }
+        
+        // Обновление статистики
+        function updateStats() {
+            // Всего культур (без учета архивных)
+            const activeCards = cards.filter(card => !card.archived);
+            document.getElementById('total-cultures').textContent = activeCards.length;
+            
+            // Всего растений
+            const totalPlants = activeCards.reduce((sum, card) => sum + (card.totalExplants || 0), 0);
+            document.getElementById('total-plants').textContent = totalPlants;
+            
+            // В размножении
+            const inPropagation = activeCards.filter(card => 
+                card.status === "Размножение"
+            ).length;
+            document.getElementById('in-propagation').textContent = inPropagation;
+            
+            // В адаптации
+            const inAdaptation = activeCards.filter(card => 
+                card.status === "Адаптация А1" || card.status === "Адаптация А2"
+            ).length;
+            document.getElementById('in-adaptation').textContent = inAdaptation;
+            
+            // Требуют пересадки (таймер истек)
+            const needsTransplant = activeCards.filter(card => {
+                const daysLeft = calculateDaysLeft(card.startDate);
+                return daysLeft !== null && daysLeft <= 0;
+            }).length;
+            document.getElementById('needs-transplant').textContent = needsTransplant;
+        }
+        
+        // Фильтрация карточек по поисковому запросу
+        function filterCards() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Сначала снимаем подсветку со всех карточек
+            clearHighlights();
+            
+            if (!searchText) {
+                // Если поиск пустой, показываем все карточки
+                cards.forEach(card => {
+                    const cardElement = document.querySelector(`.card[data-id="${card.id}"]`);
+                    if (cardElement) {
+                        cardElement.style.display = 'flex';
+                    }
+                });
+                return;
+            }
+            
+            // Фильтруем карточки по поисковому запросу
+            cards.forEach(card => {
+                const cardElement = document.querySelector(`.card[data-id="${card.id}"]`);
+                if (cardElement) {
+                    const matchesSearch = card.plantName.toLowerCase().includes(searchText) || 
+                                        (card.latinName && card.latinName.toLowerCase().includes(searchText)) ||
+                                        (card.hormones && card.hormones.toLowerCase().includes(searchText)) ||
+                                        (card.medium && card.medium.toLowerCase().includes(searchText));
+                    
+                    cardElement.style.display = matchesSearch ? 'flex' : 'none';
+                    
+                    // Подсвечиваем карточки, которые соответствуют поиску
+                    if (matchesSearch) {
+                        cardElement.classList.add('highlighted');
+                    }
+                }
+            });
+        }
+        
+        // Открытие календаря
+        function openCalendar() {
+            renderCalendar();
+            document.getElementById('calendarModal').style.display = 'flex';
+        }
+        
+        // Закрытие календаря
+        function closeCalendar() {
+            document.getElementById('calendarModal').style.display = 'none';
+        }
+        
+        // Открытие раздела Данные
+        function openData() {
+            // Загружаем актуальные данные
+            updateMediumList();
+            loadPropagationProtocols();
+            
+            document.getElementById('dataModal').style.display = 'flex';
+        }
+        
+        // Закрытие раздела Данные
+        function closeData() {
+            document.getElementById('dataModal').style.display = 'none';
+        }
+        
+        // Открытие архива
+        function openArchive() {
+            renderArchive();
+            document.getElementById('archiveModal').style.display = 'flex';
+        }
+        
+        // Закрытие архива
+        function closeArchive() {
+            document.getElementById('archiveModal').style.display = 'none';
+        }
+        
+        // Отрисовка архива
+        function renderArchive() {
+            const archiveList = document.getElementById('archiveList');
+            archiveList.innerHTML = '';
+            
+            const archivedCards = cards.filter(card => card.archived);
+            
+            if (archivedCards.length === 0) {
+                archiveList.innerHTML = '<p>Архив пуст</p>';
+                return;
+            }
+            
+            archivedCards.forEach(card => {
+                const archiveItem = document.createElement('div');
+                archiveItem.className = 'archive-item';
+                archiveItem.innerHTML = `
+                    <div class="archive-item-info">
+                        <h3>${card.plantName}</h3>
+                        <p class="latin-name">${card.latinName || ''}</p>
+                        <p>Статус: ${card.status}</p>
+                        <p>Эксплантов: ${card.totalExplants || 0}</p>
+                    </div>
+                    <div class="archive-item-actions">
+                        <button class="btn btn-primary" onclick="restoreCard('${card.id}')">Восстановить</button>
+                    </div>
+                `;
+                archiveList.appendChild(archiveItem);
+            });
+        }
+        
+        // Открытие настроек
+        function openSettings() {
+            updateHormonesList();
+            updateMediumList();
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+        
+        // Закрытие настроек
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+        
+        // Добавление нового гормона
+        function addNewHormone() {
+            const newHormone = document.getElementById('newHormone').value.trim();
+            const newHormoneColor = document.getElementById('newHormoneColor').value;
+            
+            if (!newHormone) {
+                alert('Пожалуйста, введите название гормона');
+                return;
+            }
+            
+            if (!hormonesList.some(h => h.name === newHormone)) {
+                hormonesList.push({ name: newHormone, color: newHormoneColor });
+                localStorage.setItem('hormonesList', JSON.stringify(hormonesList));
+                updateHormonesList();
+                document.getElementById('newHormone').value = '';
+                alert('Гормон успешно добавлен');
+            } else {
+                alert('Этот гормон уже есть в списке');
+            }
+        }
+        
+        // Обновление названия гормона
+        function updateHormoneName(index, newValue) {
+            if (!newValue.trim()) {
+                alert('Название гормона не может быть пустым');
+                updateHormonesList();
+                return;
+            }
+            
+            hormonesList[index].name = newValue.trim();
+            localStorage.setItem('hormonesList', JSON.stringify(hormonesList));
+            updateHormonesList();
+        }
+        
+        // Обновление цвета гормона
+        function updateHormoneColor(index, newColor) {
+            hormonesList[index].color = newColor;
+            localStorage.setItem('hormonesList', JSON.stringify(hormonesList));
+            updateHormonesList();
+        }
+        
+        // Удаление гормона
+        function removeHormone(index) {
+            if (confirm('Вы уверены, что хотите удалить этот гормон?')) {
+                hormonesList.splice(index, 1);
+                localStorage.setItem('hormonesList', JSON.stringify(hormonesList));
+                updateHormonesList();
+            }
+        }
+        
+        // Добавление новой среды
+        function addNewMedium() {
+            const newMedium = document.getElementById('newMedium').value.trim();
+            const newMediumColor = document.getElementById('newMediumColor').value;
+            
+            if (!newMedium) {
+                alert('Пожалуйста, введите название среды');
+                return;
+            }
+            
+            if (!mediumList.some(m => m.name === newMedium)) {
+                mediumList.push({ name: newMedium, color: newMediumColor });
+                localStorage.setItem('mediumList', JSON.stringify(mediumList));
+                updateMediumList();
+                document.getElementById('newMedium').value = '';
+                alert('Среда успешно добавлена');
+            } else {
+                alert('Эта среда уже есть в списке');
+            }
+        }
+        
+        // Обновление названия среды
+        function updateMediumName(index, newValue) {
+            if (!newValue.trim()) {
+                alert('Название среды не может быть пустым');
+                updateMediumList();
+                return;
+            }
+            
+            mediumList[index].name = newValue.trim();
+            localStorage.setItem('mediumList', JSON.stringify(mediumList));
+            updateMediumList();
+        }
+        
+        // Обновление цвета среды
+        function updateMediumColor(index, newColor) {
+            mediumList[index].color = newColor;
+            localStorage.setItem('mediumList', JSON.stringify(mediumList));
+            updateMediumList();
+        }
+        
+        // Удаление среды
+        function removeMedium(index) {
+            if (confirm('Вы уверены, что хотите удалить эту среду?')) {
+                mediumList.splice(index, 1);
+                localStorage.setItem('mediumList', JSON.stringify(mediumList));
+                updateMediumList();
+            }
+        }
+        
+        // Смена месяца в календаре
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar();
+        }
+        
+        // Отрисовка календаря
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const monthYearElement = document.getElementById('currentMonthYear');
+            
+            // Устанавливаем заголовок с месяцем и годом
+            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+                               "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            const month = monthNames[currentCalendarDate.getMonth()];
+            const year = currentCalendarDate.getFullYear();
+            monthYearElement.textContent = `${month} ${year}`;
+            
+            // Очищаем календарь
+            calendarGrid.innerHTML = '';
+            
+            // Добавляем заголовки дней недели
+            const dayNames = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+            dayNames.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-header';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Получаем первый день месяца и количество дней в месяце
+            const firstDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), 1);
+            const lastDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            
+            // Определяем день недели для первого дня месяца (0 - воскресенье, 1 - понедельник и т.д.)
+            let firstDayIndex = firstDay.getDay();
+            if (firstDayIndex === 0) firstDayIndex = 7; // Воскресенье становится 7-м днем
+            
+            // Добавляем пустые ячейки для дней до первого дня месяца
+            for (let i = 1; i < firstDayIndex; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Добавляем ячейки для каждого дня месяца
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                // Форматируем дату для сравнения
+                const currentDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), day);
+                const dateString = currentDate.toISOString().split('T')[0];
+                
+                // Ищем культуры, у которых срок пересадки в этот день
+                const events = cards.filter(card => {
+                    if (!card.startDate || card.archived) return false;
+                    
+                    const startDate = new Date(card.startDate);
+                    const transplantDate = new Date(startDate);
+                    transplantDate.setDate(startDate.getDate() + 21);
+                    
+                    return transplantDate.toISOString().split('T')[0] === dateString;
+                });
+                
+                // Если есть события, добавляем их в ячейку
+                if (events.length > 0) {
+                    dayElement.classList.add('has-events');
+                    dayElement.innerHTML = `<strong>${day}</strong>`;
+                    
+                    events.forEach(event => {
+                        const eventElement = document.createElement('div');
+                        eventElement.className = 'calendar-event';
+                        eventElement.textContent = event.plantName;
+                        dayElement.appendChild(eventElement);
+                    });
+                } else {
+                    dayElement.textContent = day;
+                }
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+        
+        // Сохранение карточек в localStorage
+        function saveCards() {
+            localStorage.setItem('aPlantaCards', JSON.stringify(cards));
+        }
+        
+        // Прикрепление обработчиков событий
+        function attachEventListeners() {
+            document.getElementById('cardForm').addEventListener('submit', saveCard);
+            
+            // Закрытие модального окна при клике вне его
+            window.addEventListener('click', (e) => {
+                const modal = document.getElementById('cardModal');
+                const countModal = document.getElementById('countInputModal');
+                const calendarModal = document.getElementById('calendarModal');
+                const settingsModal = document.getElementById('settingsModal');
+                const archiveModal = document.getElementById('archiveModal');
+                const dataModal = document.getElementById('dataModal');
+                
+                if (e.target === modal) closeModal();
+                if (e.target === countModal) closeCountModal();
+                if (e.target === calendarModal) closeCalendar();
+                if (e.target === settingsModal) closeSettings();
+                if (e.target === archiveModal) closeArchive();
+                if (e.target === dataModal) closeData();
+            });
+        }
+        
+        // Инициализация приложения после загрузки DOM
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
